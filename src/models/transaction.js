@@ -26,7 +26,7 @@ const userScheme = mongoose.Schema({
         required: true
     },
     MerchantType: {
-        type: Number,
+        type: String,
         required: true
     }    
 });

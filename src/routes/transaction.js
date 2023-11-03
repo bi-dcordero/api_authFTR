@@ -7,34 +7,35 @@ const router = express.Router();
 const limit = 1000; // Establecer un lÃ­mite superior para las transacciones legÃ­timas
 const blackList = ["4900"]; // Lista negra de MCC
 const mediaMontoTransaccionesPrevias = 500; // Media de transacciones anteriores
-let text = "allow transaction";
-let result = true;
+
 
 function detection(amount, merchant, location){
+    let text = "allow transaction";
+    let result = true;
+    
     if (amount > limit) {
         result = false;
         text = "fraud: high amount";
-      }
-      if (blackList.includes(merchant)) {
+    }
+    if (blackList.includes(merchant)) {
         result = false;
         text = "fraud: merchant in black list";
-      }
-      if (amount > 2 * mediaMontoTransaccionesPrevias) {
+     }
+    if (amount > 2 * mediaMontoTransaccionesPrevias) {
         result = false;
         text = "suspected fraud: unusually high amount";
-      }
-            
-      if (location !== "GTQ") {
+    }            
+    if (location !== "GTQ") {
         result = false;
         text = "fraud: purchase is made abroad";
-      }
+    }
 
-      let responseBody = {
+    let responseBody = {
         result: result,
         description: text
-      };
+    };
 
-      return responseBody;    
+    return responseBody;    
 }
 
 //create user
