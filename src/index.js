@@ -5,7 +5,7 @@ const userRoutes = require("./routes/user");
 const transactionRoutes = require("./routes/transaction");
 
 const app = express();
-const port = process.env.PORT;
+const port = process.env.PORT || 3000;
 
 // middlewareUser
 app.use(express.json());

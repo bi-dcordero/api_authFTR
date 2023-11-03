@@ -18,7 +18,7 @@ const userScheme = mongoose.Schema({
         required: true
     },
     AcquiringInstitutionCountryCode: {
-        type: Number,
+        type: String,
         required: true
     },
     CurrencyCodeTransaction: {
