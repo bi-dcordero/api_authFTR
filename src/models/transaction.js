@@ -28,6 +28,10 @@ const userScheme = mongoose.Schema({
     MerchantType: {
         type: String,
         required: true
+    },   
+    celphone: {
+        type: String,
+        required: true
     }    
 });
 

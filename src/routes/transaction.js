@@ -1,8 +1,13 @@
 const express = require("express");
 const userScheme = require("../models/transaction");
 const axios = require("axios")
+const twilio = require("twilio");
 
 const router = express.Router();
+
+const accountSid = 'AC7e4d4ab8fefbe6dc7f5367021b7cbb9d';
+const authToken = '1a3e0e1be3302bedb2a603809edfa505';
+const client = twilio(accountSid, authToken);
 
 //create Lambda
 const limit = 1000; // Establecer un lÃ­mite superior para las transacciones legÃ­timas
@@ -59,7 +64,28 @@ router.post('/transaction', (req,res) => {
             mcc: user.MerchantType,
             monto: user.AmountTransaction
         }
+
+        //Registro Sitio
         axios.post(url, request)
+        
+        //Envio SMS
+        client.messages
+        .create({
+            body: 'Detectamos un consumo no reconocido en tu tarjeta de crédito',
+            from: '+15165968827',
+            to: user.celphone
+        })
+        .then(message => {
+            console.log('SMS enviado con éxito:', message.sid);
+            //res.send('SMS enviado con éxito');
+        })
+        .catch((error) => {
+            console.error('Error al enviar SMS:', error);
+            //res.status(500).send('Error al enviar SMS');
+        });
+
+        client.setheader
+        
     }
 
     res.json(response);
