@@ -1,5 +1,6 @@
 const express = require("express");
 const userScheme = require("../models/transaction");
+const axios = require("axios")
 
 const router = express.Router();
 
@@ -8,6 +9,7 @@ const limit = 1000; // Establecer un lÃ­mite superior para las transacciones l
 const blackList = ["4900"]; // Lista negra de MCC
 const mediaMontoTransaccionesPrevias = 500; // Media de transacciones anteriores
 
+let url = 'https://apiftr.up.railway.app/agregar-transaccion';
 
 function detection(amount, merchant, location){
     let text = "allow transaction";
@@ -43,21 +45,27 @@ router.post('/transaction', (req,res) => {
     const user = userScheme(req.body);
     let responseD = detection(user.AmountTransaction, user.MerchantType, user.AcquiringInstitutionCountryCode);
 
-    let data = {
-        Codigo: "0",
-        Descripción: "Transaccion Exitosa"
-    }
-
     const response = {
         statusCode: 200,
         result: responseD.result,
         description: responseD.description
     };
 
+    if(responseD.result == false){
+        let request = {
+            fecha: user.TransactionDate,
+            tarjeta: user.PrimaryAccountNumber,
+            moneda: user.AcquiringInstitutionCountryCode,
+            mcc: user.MerchantType,
+            monto: user.AmountTransaction
+        }
+        axios.post(url, request)
+    }
+
     res.json(response);
+    
+    user.save()
     /*
-    user
-    .save()
     .then((data) => res.json(data))
     .catch((error) => res.json({ message: error}))
     */
